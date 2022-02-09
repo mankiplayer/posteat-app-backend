@@ -3,7 +3,8 @@ import { RestaurantsService } from './restaurants.service';
 import { RestaurantsController } from './restaurants.controller';
 
 @Module({
+  imports: [],
   controllers: [RestaurantsController],
-  providers: [RestaurantsService]
+  providers: [RestaurantsService],
 })
 export class RestaurantsModule {}

@@ -23,3 +23,9 @@ export interface Channel {
   type: 'homepage' | 'facebook' | 'instagram' | 'blog' | 'etc';
   url: string;
 }
+
+export interface MichelinGuide {
+  year: number;
+  star: number; // 0~3, 0은 '빕 구르망'
+  url?: string;
+}

@@ -1,37 +1,15 @@
-import {
-  Table,
-  Entity,
-  Attribute,
-  AutoGenerateAttribute,
-  AUTO_GENERATE_ATTRIBUTE_STRATEGY,
-} from '@typedorm/common';
-import AWS from 'aws-sdk';
-import { Coordinate, Menu, Facility, Channel } from '../restaurants.interface';
-
-AWS.config.update({ region: 'ap-northeast-2' });
-
-const queriesTable = new Table({
-  name: 'posteat-queries',
-  partitionKey: 'pkey',
-});
-
-const eventsTable = new Table({
-  name: 'posteat-events',
-  partitionKey: 'pkey',
-  sortKey: 'timestamp',
-});
+import { Attribute, Entity } from '@typedorm/common';
+import { Channel, Coordinate, Facility, Menu } from '../restaurants.interface';
 
 @Entity({
   name: 'restaurant',
   primaryKey: {
-    partitionKey: 'Restaurant#{{id}}',
+    partitionKey: 'restaurant#{{id}}',
   },
 })
 export class Restaurant {
   /** ID */
-  @AutoGenerateAttribute({
-    strategy: AUTO_GENERATE_ATTRIBUTE_STRATEGY.UUID4,
-  })
+  @Attribute()
   id: string;
 
   /** 네이버 플레이스 ID */
@@ -125,28 +103,3 @@ export class Restaurant {
     menu?: string;
   } | null;
 }
-
-import { createConnection, getEntityManager } from '@typedorm/core';
-
-createConnection({
-  table: queriesTable,
-  entities: [Restaurant],
-});
-
-const entityManger = getEntityManager();
-
-async function test() {
-  // const restaurant = new Restaurant();
-  // restaurant.nid = 32873365;
-  // restaurant.name = '야마야';
-  // restaurant.keywords = ['맛집', '대창전골', '명란젓'];
-
-  // const response = await entityManger.create(restaurant);
-  // console.log(response);
-  // console.log(restaurant.id);
-
-  // console.log(await entityManger.findOne(Restaurant, { uuid: response.uuid }));
-  console.log(await entityManger.count(Restaurant, { uuid: '' }));
-  // console.log(await entityManger.findOne(Restaurant, { id: restaurant.id }));
-}
-test();
