@@ -4,6 +4,7 @@ import {
   AutoGenerateAttribute,
   AUTO_GENERATE_ATTRIBUTE_STRATEGY,
 } from '@typedorm/common';
+import { TypedEntity } from '../dynamodb/dynamodb.entity';
 
 /**
  * EventSource entity
@@ -12,23 +13,17 @@ import {
 @Entity({
   name: 'event',
   primaryKey: {
-    partitionKey: '{{resource}}#{{id}}',
+    partitionKey: '{{type}}#{{id}}',
     sortKey: '{{timestamp}}',
   },
 })
-export class Event<T = never> {
-  constructor(resource: string, id: string, event: string, payload?: any) {
-    this.resource = resource;
+export class Event<T = never> extends TypedEntity {
+  constructor(type: string, id: string, event: string, payload?: any) {
+    super(type, id);
     this.id = id;
     this.event = event;
     this.payload = payload ?? {};
   }
-
-  @Attribute()
-  resource: string;
-
-  @Attribute()
-  id: string;
 
   @Attribute()
   event: string;
