@@ -21,9 +21,9 @@ export class User extends TypedEntity<'user'> {
 
   /** nickname */
   @Attribute()
-  nick: string;
+  nickname: string;
 
   /** profile image URL */
   @Attribute()
-  pic?: string;
+  picture?: string;
 }

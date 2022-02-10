@@ -16,10 +16,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @Length(3)
-  nick: string;
+  nickname: string;
 
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  pic: string;
+  picture: string;
 }

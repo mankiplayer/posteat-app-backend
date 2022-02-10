@@ -18,9 +18,9 @@ export class UsersService {
     const id = randomUUID();
     const user = new User(id);
     user.username = createUserDto.username;
-    user.nick = createUserDto.nick;
     user.password = createUserDto.password;
-    user.pic = createUserDto.pic;
+    user.nickname = createUserDto.nickname;
+    user.picture = createUserDto.picture;
     try {
       await this.viewConnection.entityManager.create(user);
     } catch (e) {
