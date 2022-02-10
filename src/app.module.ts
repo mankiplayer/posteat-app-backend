@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { DynamoDBModule } from './dynamodb/dynamodb.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './users/users.module';
@@ -9,6 +8,7 @@ import { CommentsModule } from './comments/comments.module';
 import { User } from './users/user.entity';
 import { Restaurant } from './restaurants/restaurant.entity';
 import { Comment } from './comments/comment.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,9 +17,10 @@ import { Comment } from './comments/comment.entity';
     UsersModule,
     RestaurantsModule,
     CommentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
   exports: [],
 })
 export class AppModule {}

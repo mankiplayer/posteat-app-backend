@@ -1,26 +1,23 @@
-import {
-  Attribute,
-  AutoGenerateAttribute,
-  Entity,
-  AUTO_GENERATE_ATTRIBUTE_STRATEGY,
-} from '@typedorm/common';
+import { Entity, Attribute } from '@typedorm/common';
+import { TypedEntity } from '../dynamodb/dynamodb.entity';
 
 @Entity({
   name: 'user',
   primaryKey: {
-    partitionKey: 'user#{{id}}',
+    partitionKey: '{{type}}#{{id}}',
   },
 })
-export class User {
-  /** ID */
-  @AutoGenerateAttribute({
-    strategy: AUTO_GENERATE_ATTRIBUTE_STRATEGY.UUID4,
-  })
-  id: string;
+export class User extends TypedEntity<'user'> {
+  constructor(id: string) {
+    super('user', id);
+  }
 
   /** username (login name) */
   @Attribute({ unique: true })
   username: string;
+
+  @Attribute()
+  password: string;
 
   /** nickname */
   @Attribute()
@@ -28,5 +25,5 @@ export class User {
 
   /** profile image URL */
   @Attribute()
-  pic: string;
+  pic?: string;
 }

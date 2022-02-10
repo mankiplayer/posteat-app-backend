@@ -15,7 +15,7 @@ export class RestaurantsService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async create(createRestaurantDto: CreateRestaurantDto) {
+  async create(createRestaurantDto: CreateRestaurantDto): Promise<{ id: string }> {
     // TODO: Check whether the restaurant already exists
     if (createRestaurantDto.nvPlaceId) {}
     // TODO: Restaurant status
@@ -42,24 +42,25 @@ export class RestaurantsService {
   }
 
   findOne(id: string) {
-    return this.viewConnection.entityManager.findOne(Restaurant, { id });
+    const key = { type: 'restaurant', id };
+    return this.viewConnection.entityManager.findOne(Restaurant, key);
   }
 
   async update(id: string, updateRestaurantDto: UpdateRestaurantDto) {
-    // save event source
+    // Save event source
     const event = new Event('restaurant', id, 'updated', updateRestaurantDto);
     await this.eventConnection.entityManager.create(event);
 
-    // emit event
+    // Emit event
     this.eventEmitter.emit('restaurant.updated', event);
   }
 
   async remove(id: string) {
-    // save event source
+    // Save event source
     const event = new Event('restaurant', id, 'deleted');
     await this.eventConnection.entityManager.create(event);
 
-    // emit event
+    // Emit event
     this.eventEmitter.emit('restaurant.deleted', event);
   }
 }

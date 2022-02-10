@@ -4,6 +4,8 @@ import { Event } from '../core/event.entity';
 import { Restaurant } from './restaurant.entity';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
+import { CreateCommentDto } from '../comments/dto/create-comment.dto';
+import { UpdateCommentDto } from '../comments/dto/update-comment.dto';
 
 export class RestaurantsEventHandler {
   constructor(@Inject('VIEW_CONNECTION') private viewConnection) {}
@@ -37,18 +39,41 @@ export class RestaurantsEventHandler {
 
   @OnEvent('restaurant.updated')
   async handleRestaurantUpdatedEvent(event: Event<UpdateRestaurantDto>) {
+    const key = { type: 'restaurant', id: event.id };
     await this.viewConnection.entityManager.update(
       Restaurant,
-      { id: event.id },
+      key,
       event.payload,
     );
   }
 
   @OnEvent('restaurant.deleted')
-  async handleRestaurantDeletedEvent(event: Event) {
-    await this.viewConnection.entityManager.delete(
+  async handleRestaurantDeletedEvent(event: Event<{ id: string }>) {
+    const key = { type: 'restaurant', id: event.id };
+    await this.viewConnection.entityManager.delete(Restaurant, key);
+  }
+
+  @OnEvent('comment.created')
+  async handleCommentCreatedEvent(event: Event<CreateCommentDto>) {
+    const key = { type: 'restaurant', id: event.payload.restaurantId };
+    const view = await this.viewConnection.entityManager.findOne(Restaurant, key);
+
+    const reviewCount = view.reviewCount + 1;
+    const avgRating = 0; // TODO: recalculate
+    await this.viewConnection.entityManager.update(
       Restaurant,
-      { id: event.id },
+      key,
+      { reviewCount, avgRating },
     );
+  }
+
+  @OnEvent('comment.updated')
+  async handleCommentUpdatedEvent(event: Event<UpdateCommentDto>) {
+    // TODO
+  }
+
+  @OnEvent('comment.deleted')
+  async handleCommentDeletedEvent(event: Event) {
+    // TODO
   }
 }

@@ -1,0 +1,90 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "tokenizer": {
+        "hangul": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "none"
+        },
+        "edge_30grams": {
+          "type": "edge_ngram",
+          "min_gram": 1,
+          "max_gram": 30,
+          "token_chars": [
+            "letter",
+            "digit",
+            "punctuation",
+            "symbol"
+          ]
+        }
+      },
+      "analyzer": {
+        "hangul": {
+          "type": "custom",
+          "tokenizer": "hangul",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "autocomplete_case_insensitive": {
+          "type": "custom",
+          "tokenizer": "edge_30grams",
+          "filter": [
+            "lowercase"
+          ]
+        },
+        "autocomplete_case_sensitive": {
+          "type": "custom",
+          "tokenizer": "edge_30grams",
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "autocomplete_normal": {
+          "path_match": "_decomposed.*",
+          "mapping": {
+            "type": "text",
+            "analyzer": "autocomplete_case_insensitive",
+            "search_analyzer": "standard"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "type": { "type": "keyword" },
+      "id": { "type": "keyword" },
+      "name": {
+        "type": "text",
+        "analyzer": "hangul",
+        "search_analyzer": "hangul",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "category": { "type": "keyword" },
+      "location": { "type": "geo_point" },
+      "keywords": { "type": "keyword" },
+      "naver": {
+        "type": "nested",
+        "properties": {
+          "reviewCount": { "type": "integer" },
+          "avgRating": { "type": "float" }
+        }
+      },
+      "michelinGuide": { "type": "boolean" },
+      "inMedia": { "type": "boolean" },
+      "reviewCount": { "type": "integer" },
+      "avgRating": { "type": "float" }
+    }
+  }
+}

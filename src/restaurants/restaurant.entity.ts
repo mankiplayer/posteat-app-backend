@@ -3,7 +3,7 @@ import { TypedEntity } from '../dynamodb/dynamodb.entity';
 import { Channel, Coordinate, Facility, Menu } from './restaurants.interface';
 
 @Entity({
-  name: '{{type}}',
+  name: 'restaurant',
   primaryKey: {
     partitionKey: '{{type}}#{{id}}',
   },
