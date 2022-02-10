@@ -16,9 +16,6 @@ export class RestaurantsEventHandler {
     restaurant.category = event.payload.category;
     restaurant.summary = event.payload.summary;
     restaurant.image = event.payload.image;
-    // restaurant.reviewCount = event.payload.;
-    // restaurant.avgRating = event.payload.;
-    restaurant.michelinGuide = null;
     restaurant.description = event.payload.description ?? '';
     restaurant.extraImages = event.payload.extraImages ?? [];
     restaurant.phone = event.payload.phone ?? '';
@@ -30,7 +27,10 @@ export class RestaurantsEventHandler {
     restaurant.menuImages = null;
     restaurant.facilities = null;
     restaurant.channels = null;
+    restaurant.michelinGuide = null;
     restaurant.inMedia = null;
+    restaurant.reviewCount = 0;
+    restaurant.avgRating = 0;
 
     await this.viewConnection.entityManager.create(restaurant);
   }
