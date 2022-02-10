@@ -23,8 +23,8 @@ export class Comment {
   @Attribute()
   user: {
     id: string;
-    nick: string;
-    pic?: string;
+    nickname: string;
+    picture?: string;
   };
 
   @Attribute()
