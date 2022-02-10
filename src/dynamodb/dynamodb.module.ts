@@ -1,7 +1,8 @@
 import { Module, Global, DynamicModule } from '@nestjs/common';
+import { EntityTarget } from '@typedorm/common';
 import { createConnection } from '@typedorm/core';
 import AWS from 'aws-sdk';
-import { DynamoDBEntities } from './dynamodb.interfaces';
+import { Event } from '../core/event.entity';
 import { eventTable, viewTable } from './dynamodb.tables';
 
 // Causes 'Missing region in config' error without this
@@ -13,26 +14,28 @@ AWS.config.update({ region: 'ap-northeast-2' });
 @Global()
 @Module({})
 export class DynamoDBModule {
-  static forRoot(entities: DynamoDBEntities): DynamicModule {
+  static forRoot(entities: EntityTarget<any>[]): DynamicModule {
     return {
       module: DynamoDBModule,
       providers: [
+        // Connection for Event Sourcing
         {
           provide: 'EVENT_CONNECTION',
           useFactory: () =>
             createConnection({
               table: eventTable,
               name: 'events',
-              entities: entities.events,
+              entities: [Event],
             }),
         },
+        // Connection for view entities
         {
           provide: 'VIEW_CONNECTION',
           useFactory: () =>
             createConnection({
               table: viewTable,
               name: 'views',
-              entities: entities.views,
+              entities,
             }),
         },
       ],

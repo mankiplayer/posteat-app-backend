@@ -1,5 +1,5 @@
 import { Attribute, Entity } from '@typedorm/common';
-import { Channel, Coordinate, Facility, Menu } from '../restaurants.interface';
+import { Channel, Coordinate, Facility, Menu } from './restaurants.interface';
 
 @Entity({
   name: 'restaurant',
@@ -13,8 +13,8 @@ export class Restaurant {
   id: string;
 
   /** 네이버 플레이스 ID */
-  @Attribute({ unique: true })
-  nid: number;
+  @Attribute()
+  nvPlaceId: number;
 
   /** 상호 */
   @Attribute()
@@ -66,7 +66,7 @@ export class Restaurant {
 
   /** 좌표(위도, 경도) */
   @Attribute()
-  location: Coordinate;
+  location: Coordinate | null;
 
   /** 오시는 길 */
   @Attribute()
@@ -78,11 +78,11 @@ export class Restaurant {
 
   /** 메뉴 */
   @Attribute()
-  menus: Menu[];
+  menus: Menu[] | null;
 
   /** 메뉴판 이미지 */
   @Attribute()
-  menuImages: string[];
+  menuImages: string[] | null;
 
   // /** 영업시간 */
   // @Attribute()
@@ -90,11 +90,11 @@ export class Restaurant {
 
   /** 편의시설 */
   @Attribute()
-  facilities: Facility[];
+  facilities: Facility[] | null;
 
   /** 인스타그램, 페이스북 등 */
   @Attribute()
-  channels: Channel[];
+  channels: Channel[] | null;
 
   /** 방송 출연 정보 */
   @Attribute()

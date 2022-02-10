@@ -13,6 +13,9 @@ async function bootstrap(): Promise<Handler> {
   return serverlessExpress({ app: expressApp });
 }
 
+/**
+ * AWS Lambda entry point
+ */
 export const handler: Handler = async (
   event: any,
   context: Context,
