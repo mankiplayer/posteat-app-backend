@@ -1,12 +1,16 @@
 import {
   Controller,
+  UseGuards,
   Get,
   Post,
-  Body,
   Patch,
-  Param,
   Delete,
-  UseGuards,
+  Request,
+  Param,
+  Body,
+  ParseUUIDPipe,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommentsService } from './comments.service';
@@ -19,7 +23,8 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
+  create(@Request() req, @Body() createCommentDto: CreateCommentDto) {
+    createCommentDto.userId = req.user.id;
     return this.commentsService.create(createCommentDto);
   }
 
@@ -29,19 +34,37 @@ export class CommentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.commentsService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
+  async update(
+    @Request() req,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    const comment = await this.commentsService.findOne(id);
+    if (!comment) {
+      throw new NotFoundException();
+    }
+    if (comment.user.id !== req.user.id) {
+      throw new ForbiddenException();
+    }
+    return this.commentsService.update(id, updateCommentDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  async remove(@Request() req, @Param('id', ParseUUIDPipe) id: string) {
+    const comment = await this.commentsService.findOne(id);
+    if (!comment) {
+      throw new NotFoundException();
+    }
+    if (comment.user.id !== req.user.id) {
+      throw new ForbiddenException();
+    }
+    return this.commentsService.remove(id);
   }
 }

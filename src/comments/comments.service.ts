@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Comment } from './comment.entity';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
@@ -12,15 +13,15 @@ export class CommentsService {
     return `This action returns all comments`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: string): Promise<Comment> {
+    return null;
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
+  update(id: string, updateCommentDto: UpdateCommentDto) {
     return `This action updates a #${id} comment`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} comment`;
   }
 }

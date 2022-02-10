@@ -1,5 +1,6 @@
 import {
   IsOptional,
+  IsEmpty,
   IsNotEmpty,
   IsString,
   IsUUID,
@@ -14,6 +15,9 @@ export class CreateCommentDto {
   @IsNotEmpty()
   @IsUUID()
   restaurantId: string;
+
+  @IsEmpty()
+  userId: string;
 
   @IsNotEmpty()
   @IsString()

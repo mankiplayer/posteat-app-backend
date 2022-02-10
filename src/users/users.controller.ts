@@ -8,6 +8,7 @@ import {
   Delete,
   Request,
   UseGuards,
+  ParseUUIDPipe,
   ForbiddenException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -25,7 +26,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
   }
 
@@ -33,7 +34,7 @@ export class UsersController {
   @Patch(':id')
   update(
     @Request() req,
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     if (req.user.id !== id) {
@@ -44,7 +45,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Request() req, @Param('id') id: string) {
+  remove(@Request() req, @Param('id', ParseUUIDPipe) id: string) {
     if (req.user.id !== id) {
       throw new ForbiddenException();
     }
