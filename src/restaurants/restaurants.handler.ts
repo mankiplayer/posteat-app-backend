@@ -10,8 +10,7 @@ export class RestaurantsEventHandler {
 
   @OnEvent('restaurant.created')
   async handleRestaurantCreatedEvent(event: Event<CreateRestaurantDto>) {
-    const restaurant = new Restaurant();
-    restaurant.id = event.id;
+    const restaurant = new Restaurant(event.id);
     restaurant.nvPlaceId = event.payload.nvPlaceId;
     restaurant.name = event.payload.name;
     restaurant.category = event.payload.category;

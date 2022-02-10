@@ -1,16 +1,17 @@
-import { Attribute, Entity } from '@typedorm/common';
+import { Entity, Attribute } from '@typedorm/common';
+import { TypedEntity } from '../dynamodb/dynamodb.entity';
 import { Channel, Coordinate, Facility, Menu } from './restaurants.interface';
 
 @Entity({
-  name: 'restaurant',
+  name: '{{type}}',
   primaryKey: {
-    partitionKey: 'restaurant#{{id}}',
+    partitionKey: '{{type}}#{{id}}',
   },
 })
-export class Restaurant {
-  /** ID */
-  @Attribute()
-  id: string;
+export class Restaurant extends TypedEntity<'restaurant'> {
+  constructor(id: string) {
+    super('restaurant', id);
+  }
 
   /** 네이버 플레이스 ID */
   @Attribute()

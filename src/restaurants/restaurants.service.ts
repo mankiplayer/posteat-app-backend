@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { randomUUID } from 'crypto';
 import { Event } from '../core/event.entity';
+import { Restaurant } from './restaurant.entity';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { ListRestaurantsDto } from './dto/list-restaurants.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
@@ -15,21 +16,17 @@ export class RestaurantsService {
   ) {}
 
   async create(createRestaurantDto: CreateRestaurantDto) {
-    // Check whether the restaurant already exists
-    if (createRestaurantDto.nvPlaceId) {
-      // TODO
-    }
-    // - if the request is from user, set status as 'pending'
-    // - if the request is from admin, set status as 'active' directly
+    // TODO: Check whether the restaurant already exists
+    if (createRestaurantDto.nvPlaceId) {}
+    // TODO: Restaurant status
+    //  - if the request is from user, set status as 'pending'
+    //  - if the request is from admin, set status as 'active' directly
 
     // Save event source
-    const event = new Event(
-      'restaurant',
-      randomUUID(),
-      'created',
-      createRestaurantDto,
-    );
+    const id = randomUUID();
+    const event = new Event('restaurant', id, 'created', createRestaurantDto);
     await this.eventConnection.entityManager.create(event);
+
     // Emit event
     this.eventEmitter.emit('restaurant.created', event);
 
@@ -37,18 +34,22 @@ export class RestaurantsService {
   }
 
   async list(query: ListRestaurantsDto) {
-    // use Elasticsearch
+    // // use Elasticsearch
+    // const client = new Client({ node: 'http://ec2-3-39-14-188.ap-northeast-2.compute.amazonaws.com:9200' });
+    // console.log(client);
+    // console.log(await client.cat.indices({ v: true }));
     return `This action returns all restaurants`;
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} restaurant`;
+    return this.viewConnection.entityManager.findOne(Restaurant, { id });
   }
 
   async update(id: string, updateRestaurantDto: UpdateRestaurantDto) {
     // save event source
     const event = new Event('restaurant', id, 'updated', updateRestaurantDto);
     await this.eventConnection.entityManager.create(event);
+
     // emit event
     this.eventEmitter.emit('restaurant.updated', event);
   }
@@ -57,6 +58,7 @@ export class RestaurantsService {
     // save event source
     const event = new Event('restaurant', id, 'deleted');
     await this.eventConnection.entityManager.create(event);
+
     // emit event
     this.eventEmitter.emit('restaurant.deleted', event);
   }
